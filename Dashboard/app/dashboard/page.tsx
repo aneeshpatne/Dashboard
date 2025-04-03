@@ -14,9 +14,9 @@ export default async function ProtectedPage() {
   }
 
   return (
-    <div className="flex flex-col gap-4 items-center justify-center h-screen">
+    <div className="flex flex-col gap-4 items-center">
       You are authenticated! <InfoIcon />
-      <Link href="protected/reset-password">
+      <Link href="dashboard/reset-password">
         <button className="bg-blue-500 text-white px-4 py-2 rounded">
           Reset Password
         </button>

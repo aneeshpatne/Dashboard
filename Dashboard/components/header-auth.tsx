@@ -11,7 +11,6 @@ export default async function AuthButton() {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-
   if (!hasEnvVars) {
     return (
       <>
