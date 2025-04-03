@@ -1,7 +1,7 @@
 import { createClient } from "@/utils/supabase/server";
 import { InfoIcon } from "lucide-react";
 import { redirect } from "next/navigation";
-
+import Link from "next/link";
 export default async function ProtectedPage() {
   const supabase = await createClient();
 
@@ -14,8 +14,13 @@ export default async function ProtectedPage() {
   }
 
   return (
-    <div>
+    <div className="flex flex-col gap-4 items-center justify-center h-screen">
       You are authenticated! <InfoIcon />
+      <Link href="protected/reset-password">
+        <button className="bg-blue-500 text-white px-4 py-2 rounded">
+          Reset Password
+        </button>
+      </Link>
     </div>
   );
 }
