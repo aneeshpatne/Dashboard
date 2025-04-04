@@ -22,7 +22,9 @@ const ThemeSwitcher = () => {
   }, []);
 
   if (!mounted) {
-    return null;
+    return (
+      <div className="w-[30px] h-[30px] animate-pulse rounded-md bg-muted" />
+    );
   }
 
   const ICON_SIZE = 16;
