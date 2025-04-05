@@ -245,6 +245,7 @@ function LinkBox() {
     const { error } = await supabase.storage
       .from("files")
       .remove([`uploads/${fileURL}`]);
+    setInfo({ status: "File deleted", longUrl: "" });
     await fetch("/api/url", {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
@@ -288,6 +289,7 @@ function LinkBox() {
             type="text"
             placeholder="Short URL"
             id="shortURL"
+            className="text-base"
             onChange={(e) => setShortUrl(e.target.value)}
           />
           <Button variant="outline" onClick={checker} disabled={loading}>
@@ -358,6 +360,7 @@ function LinkBox() {
             <Input
               placeholder="Long URL"
               id="longURL"
+              className="text-base"
               onChange={(e) => setUserLongURL(e.target.value)}
             ></Input>
           </div>
