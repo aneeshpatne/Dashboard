@@ -309,7 +309,10 @@ function LinkBox() {
             </a>
           )}
           {fileURL && (
-            <button className="text-red-600 underline text-sm">
+            <button
+              className="text-red-600 underline text-sm"
+              onClick={handleDelete}
+            >
               Delete File
             </button>
           )}
