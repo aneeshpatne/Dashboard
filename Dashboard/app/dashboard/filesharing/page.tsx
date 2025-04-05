@@ -78,6 +78,7 @@ export default function FilesharingPage() {
               onChange={(e) => setSearch(e.target.value)}
             />
           </div>
+
           <div className="flex flex-col gap-5 mt-4 w- mx-auto">
             <h2 className="text-lg font-medium mb-2 text-center">Results</h2>
             {filteredLinks.length === 0 && (
@@ -139,6 +140,9 @@ function LinkBox() {
   const [info, setInfo] = useState<Info>({ status: "" });
   const [uploadInfo, setUploadInfo] = useState<string>("");
   const [loading, setLoading] = useState(false);
+  const [urlType, setUrlType] = useState<string>("file-share");
+  const [fileURL, setFileURL] = useState<string>("");
+  const [userLongURL, setUserLongURL] = useState<string>("");
   const [loadingSubmit, setLoadingSubmit] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -198,8 +202,9 @@ function LinkBox() {
       await fetch("/api/url", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ shortURL, longUrl: publicUrl }),
+        body: JSON.stringify({ shortUrl: shortURL, longUrl: publicUrl }),
       });
+      console.log("File uploaded successfully:", publicUrl);
       setUploadInfo("File uploaded successfully");
     } catch (error) {
       console.error("Error uploading file:", error);
@@ -208,10 +213,69 @@ function LinkBox() {
       setLoadingSubmit(false);
     }
   };
+  const pathextractor = (url: string) => {
+    if (info?.longUrl) {
+      const url = new URL(info.longUrl);
+      const pathParts = url.pathname.split("/");
+      const publicIndex = pathParts.indexOf("public");
+      if (!(publicIndex === -1 || publicIndex + 2 >= pathParts.length)) {
+        const filePathParts = pathParts.slice(publicIndex + 2); // skip "public" and "<bucket>"
+        return filePathParts.join("/");
+      } else {
+        return "";
+      }
+    }
+  };
+  const handleSubmitUrl = async () => {
+    if (info?.longUrl) {
+      const path = pathextractor(info.longUrl);
+      if (path) {
+        handleDelete();
+      }
+    }
+    await fetch("/api/url", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ shortUrl: shortURL, longUrl: userLongURL }),
+    });
+  };
+  const handleDelete = async () => {
+    if (!fileURL) return;
+    const supabase = createClient();
+    const { error } = await supabase.storage
+      .from("files")
+      .remove([`uploads/${fileURL}`]);
+    if (error) {
+      console.log(error);
+    } else {
+      setFileURL("");
+    }
+  };
+  useEffect(() => {
+    if (info?.longUrl) {
+      const path = pathextractor(info.longUrl);
+      setFileURL(path || "");
+    }
+  }, [info?.longUrl]);
 
   return (
     <div className="flex flex-col gap-5 w-full items-center justify-center">
-      <h1 className="font-bold">Add URL</h1>
+      <div className="flex gap-2 items-center">
+        <Button
+          variant="outline"
+          className={`${urlType === "file-share" ? "border-2 border-white" : ""}`}
+          onClick={() => setUrlType("file-share")}
+        >
+          File Share
+        </Button>
+        <Button
+          variant="outline"
+          className={`${urlType === "url-shortener" ? "border-2 border-white" : ""}`}
+          onClick={() => setUrlType("url-shortener")}
+        >
+          Url Shortener
+        </Button>
+      </div>
       <div className="grid w-sm items-center gap-1.5">
         <Label htmlFor="shortURL">Short URL</Label>
         <div className="flex items-center gap-2">
@@ -239,36 +303,58 @@ function LinkBox() {
               Preview
             </a>
           )}
+          {fileURL && (
+            <button className="text-red-600 underline text-sm">
+              Delete File
+            </button>
+          )}
         </div>
       </div>
-      <Input
-        type="file"
-        ref={fileInputRef}
-        onChange={handleFileChange}
-        className="w-auto"
-      />
-      {selectedFile && (
-        <div className="flex flex-col items-center gap-2">
+
+      {urlType === "file-share" ? (
+        <>
+          <Input
+            type="file"
+            ref={fileInputRef}
+            onChange={handleFileChange}
+            className="w-auto"
+          />
+          {selectedFile && (
+            <div className="flex flex-col items-center gap-2">
+              <Button
+                variant="outline"
+                onClick={handleClear}
+                className="text-red-500 border-red-500 hover:bg-red-500 hover:text-white"
+              >
+                Remove File
+              </Button>
+            </div>
+          )}
           <Button
-            variant="outline"
-            onClick={handleClear}
-            className="text-red-500 border-red-500 hover:bg-red-500 hover:text-white"
+            type="submit"
+            className="w-auto"
+            variant="default"
+            onClick={handleSubmit}
+            disabled={loadingSubmit || !selectedFile || !shortURL}
           >
-            Remove File
+            {loadingSubmit ? "Uploading..." : "Upload File"}
           </Button>
-        </div>
-      )}
-      <Button
-        type="submit"
-        className="w-auto"
-        variant="default"
-        onClick={handleSubmit}
-        disabled={loadingSubmit || !selectedFile || !shortURL}
-      >
-        {loadingSubmit ? "Uploading..." : "Upload File"}
-      </Button>
-      {uploadInfo && (
-        <p className="text-sm text-muted-foreground">{uploadInfo}</p>
+          {uploadInfo && (
+            <p className="text-sm text-muted-foreground">{uploadInfo}</p>
+          )}
+        </>
+      ) : (
+        <>
+          <div className="grid w-[300px] items-center gap-1.5">
+            <Label htmlFor="longURL">Long URL</Label>
+            <Input
+              placeholder="Long URL"
+              id="longURL"
+              onChange={(e) => setUserLongURL(e.target.value)}
+            ></Input>
+          </div>
+          <Button className="w-[80px]">Submit</Button>
+        </>
       )}
     </div>
   );
