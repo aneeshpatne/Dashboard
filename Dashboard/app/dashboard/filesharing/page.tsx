@@ -245,6 +245,11 @@ function LinkBox() {
     const { error } = await supabase.storage
       .from("files")
       .remove([`uploads/${fileURL}`]);
+    await fetch("/api/url", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ shortUrl: shortURL }),
+    });
     if (error) {
       console.log(error);
     } else {
