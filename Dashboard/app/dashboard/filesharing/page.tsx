@@ -27,10 +27,12 @@ export default function FilesharingPage() {
   };
   const searchToggle = () => {
     setLinks([]);
+    setNewActive(false);
     setSearchActive((prev) => !prev);
   };
   const addToggle = () => {
     setLinks([]);
+    setSearchActive(false);
     setNewActive((prev) => !prev);
   };
   return (
