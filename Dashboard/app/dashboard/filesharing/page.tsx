@@ -278,7 +278,7 @@ function LinkBox() {
       </div>
       <div className="grid w-sm items-center gap-1.5">
         <Label htmlFor="shortURL">Short URL</Label>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 w-[300px]">
           <Input
             type="text"
             placeholder="Short URL"
@@ -316,8 +316,8 @@ function LinkBox() {
           <Input
             type="file"
             ref={fileInputRef}
+            className="w-[300px]"
             onChange={handleFileChange}
-            className="w-auto"
           />
           {selectedFile && (
             <div className="flex flex-col items-center gap-2">
@@ -353,7 +353,9 @@ function LinkBox() {
               onChange={(e) => setUserLongURL(e.target.value)}
             ></Input>
           </div>
-          <Button className="w-[80px]">Submit</Button>
+          <Button className="w-[80px]" onClick={handleSubmitUrl}>
+            Submit
+          </Button>
         </>
       )}
     </div>
