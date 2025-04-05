@@ -5,36 +5,47 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { useState, useRef } from "react";
 import { createClient } from "@/utils/supabase/client";
-
+import { useEffect } from "react";
 export default function FilesharingPage() {
   const [loading, setLoading] = useState(false);
-  const [searchActive, setSearchActive] = useState(false);
   const [newActive, setNewActive] = useState(false);
+  const [search, setSearch] = useState<string>("");
   const [links, setLinks] = useState<
+    { id: string; shortUrl: string; longUrl: string; createdAt: string }[]
+  >([]);
+  const [filteredLinks, setFilteredLinks] = useState<
     { id: string; shortUrl: string; longUrl: string; createdAt: string }[]
   >([]);
   const handleShowAll = async () => {
     setLoading(true);
+    setNewActive(false);
     try {
       const data = await fetch("/api/url");
       const res = await data.json();
       setLinks(res.links);
+      setFilteredLinks(res.links);
     } catch (err) {
       console.log(err);
     } finally {
       setLoading(false);
     }
   };
-  const searchToggle = () => {
-    setLinks([]);
-    setNewActive(false);
-    setSearchActive((prev) => !prev);
-  };
+
   const addToggle = () => {
     setLinks([]);
-    setSearchActive(false);
     setNewActive((prev) => !prev);
   };
+  useEffect(() => {
+    if (search === "") {
+      setFilteredLinks(links);
+    } else {
+      const reducedLinks = links.filter((link) =>
+        link.shortUrl.includes(search.toLowerCase())
+      );
+      setFilteredLinks(reducedLinks);
+    }
+  }, [search]);
+
   return (
     <div className="flex flex-col gap-4 items-center">
       <h1 className="text-2xl font-bold">File Sharing</h1>
@@ -52,35 +63,38 @@ export default function FilesharingPage() {
             Reset
           </Button>
         )}
-        <Button onClick={() => searchToggle()}>
-          {searchActive ? "Hide Search" : "Search"}
-        </Button>
+
         <Button onClick={() => addToggle()}>
           {!newActive ? <p>Add New Link</p> : <p>Hide New Link</p>}
         </Button>
       </div>
-      <div className="flex w-full items-center justify-center space-x-2 gap-3">
-        {searchActive ? (
-          <>
-            <Input type="text" placeholder="Short URL" />
-            <Button type="submit">Search</Button>{" "}
-          </>
-        ) : null}
-      </div>
+      <div className="flex w-full items-center justify-center space-x-2 gap-3"></div>
       {links.length > 0 && (
-        <div className="w-full mt-4">
-          <h2 className="text-lg font-medium mb-2">Results:</h2>
-          <ul className="flex gap-3">
-            {links.map((link, index) => (
-              <DataBox
-                id={index.toString()}
-                key={index}
-                shortUrl={link.shortUrl}
-                longUrl={link.longUrl}
-                createdAt={link.createdAt}
-              />
-            ))}
-          </ul>
+        <div className="mt-4 ">
+          <div className="mx-auto w-[300px]">
+            <Input
+              type="text"
+              placeholder="Short URL"
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </div>
+          <div className="flex flex-col gap-5 mt-4 w- mx-auto">
+            <h2 className="text-lg font-medium mb-2 text-center">Results</h2>
+            {filteredLinks.length === 0 && (
+              <p className="text-sm text-muted-foreground">No results found</p>
+            )}
+            <ul className="flex gap-3 justify-center items-center flex-wrap">
+              {filteredLinks.map((link, index) => (
+                <DataBox
+                  id={index.toString()}
+                  key={index}
+                  shortUrl={link.shortUrl}
+                  longUrl={link.longUrl}
+                  createdAt={link.createdAt}
+                />
+              ))}
+            </ul>
+          </div>
         </div>
       )}
       {newActive ? <LinkBox /> : null}
@@ -94,15 +108,16 @@ type DataBoxProps = {
   createdAt: string;
 };
 function DataBox({ id, shortUrl, longUrl, createdAt }: DataBoxProps) {
+  const longUrlDisp = new URL(longUrl).hostname.replace("www.", "");
   return (
-    <li key={id} className="border p-3 rounded-lg text-sm">
+    <li key={id} className="border p-3 rounded-lg text-sm w-[300px]">
       <div>
         <strong>Short URL:</strong> {shortUrl}
       </div>
       <div>
         <strong>Long URL:</strong>{" "}
         <a href={longUrl} target="_blank" className="text-blue-600 underline">
-          {longUrl}
+          {longUrlDisp}
         </a>
       </div>
       <div className="text-xs text-muted-foreground">
@@ -122,7 +137,9 @@ function LinkBox() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [shortURL, setShortUrl] = useState<string>("");
   const [info, setInfo] = useState<Info>({ status: "" });
+  const [uploadInfo, setUploadInfo] = useState<string>("");
   const [loading, setLoading] = useState(false);
+  const [loadingSubmit, setLoadingSubmit] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
@@ -158,13 +175,40 @@ function LinkBox() {
     }
   };
   const handleSubmit = async () => {
-    console.log("to be implemented");
+    const supabase = createClient();
+    if (!selectedFile) return;
+    setLoadingSubmit(true);
+    try {
+      const { data, error } = await supabase.storage
+        .from("files")
+        .upload(`uploads/${shortURL}-${selectedFile.name}`, selectedFile, {
+          cacheControl: "3600",
+          upsert: true,
+        });
+      if (error) {
+        setUploadInfo("Error uploading file");
+        console.log(error);
+        return;
+      }
+      const { data: publicUrlData } = supabase.storage
+        .from("files")
+        .getPublicUrl(`uploads/${shortURL}-${selectedFile.name}`);
+
+      const publicUrl = publicUrlData.publicUrl;
+      console.log("File uploaded successfully:", publicUrl);
+      setUploadInfo("File uploaded successfully");
+    } catch (error) {
+      console.error("Error uploading file:", error);
+      setUploadInfo("Error uploading file");
+    } finally {
+      setLoadingSubmit(false);
+    }
   };
 
   return (
     <div className="flex flex-col gap-5 w-full items-center justify-center">
       <h1 className="font-bold">Add URL</h1>
-      <div className="grid w-full max-w-sm items-center gap-1.5">
+      <div className="grid w-sm items-center gap-1.5">
         <Label htmlFor="shortURL">Short URL</Label>
         <div className="flex items-center gap-2">
           <Input
@@ -210,9 +254,18 @@ function LinkBox() {
           </Button>
         </div>
       )}
-      <Button type="submit" className="w-auto" variant="default">
-        Submit
+      <Button
+        type="submit"
+        className="w-auto"
+        variant="default"
+        onClick={handleSubmit}
+        disabled={loadingSubmit || !selectedFile || !shortURL}
+      >
+        {loadingSubmit ? "Uploading..." : "Upload File"}
       </Button>
+      {uploadInfo && (
+        <p className="text-sm text-muted-foreground">{uploadInfo}</p>
+      )}
     </div>
   );
 }
