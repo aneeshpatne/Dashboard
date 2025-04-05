@@ -195,7 +195,11 @@ function LinkBox() {
         .getPublicUrl(`uploads/${shortURL}-${selectedFile.name}`);
 
       const publicUrl = publicUrlData.publicUrl;
-      console.log("File uploaded successfully:", publicUrl);
+      await fetch("/api/url", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ shortURL, longUrl: publicUrl }),
+      });
       setUploadInfo("File uploaded successfully");
     } catch (error) {
       console.error("Error uploading file:", error);
