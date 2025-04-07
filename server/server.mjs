@@ -31,6 +31,7 @@ app.get("/", (req, res) => {
         p {
           font-size: 1.2rem;
           color: #666;
+          text-align: center;
         }
         a {
           margin-top: 1rem;
