@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
 const app = express();
 
 app.get("/", (req, res) => {
-  res.status(200).send("Welcome to the URL shortener redirect service!");
+  res.status(200).send("Aneesh Patne - URL Shortener API");
 });
 
 app.get("/:slug", async (req, res) => {
