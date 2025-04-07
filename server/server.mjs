@@ -4,6 +4,10 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 const app = express();
 
+app.get("/", (req, res) => {
+  res.status(200).send("Welcome to the URL shortener redirect service!");
+});
+
 app.get("/:slug", async (req, res) => {
   const { slug } = req.params;
 
