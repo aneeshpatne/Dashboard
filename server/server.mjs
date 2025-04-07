@@ -4,8 +4,12 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 const app = express();
 
-app.get("/:slug", async (req, res) => {
+app.get("/:slug?", async (req, res) => {
   const { slug } = req.params;
+
+  if (!slug) {
+    return res.status(400).json({ error: "Please enter a slug" });
+  }
 
   try {
     const record = await prisma.shortUrl.findUnique({
