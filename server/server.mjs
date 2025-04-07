@@ -4,7 +4,7 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 const app = express();
 
-app.get("/:slug?", async (req, res) => {
+app.get("/:slug", async (req, res) => {
   const { slug } = req.params;
 
   if (!slug) {
