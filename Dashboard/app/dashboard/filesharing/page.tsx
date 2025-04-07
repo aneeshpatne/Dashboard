@@ -22,6 +22,12 @@ export default function FilesharingPage() {
     try {
       const data = await fetch("/api/url");
       const res = await data.json();
+      if (!res.links) {
+        console.warn("No links returned", res);
+        setLinks([]);
+        setFilteredLinks([]);
+        return;
+      }
       setLinks(res.links);
       setFilteredLinks(res.links);
     } catch (err) {
