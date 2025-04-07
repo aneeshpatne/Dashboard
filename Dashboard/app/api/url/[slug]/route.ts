@@ -6,8 +6,10 @@ const prisma = new PrismaClient();
 
 export async function GET(
   req: NextRequest,
-  context: { params: { slug: string } }
+  context: { params: Promise<{ slug: string }> }
 ) {
+  const { slug } = await context.params; // Await the params promise
+
   const supabase = await createClient();
   const {
     data: { user },
@@ -20,7 +22,6 @@ export async function GET(
   }
 
   try {
-    const { slug } = context.params;
     const links = await prisma.shortUrl.findUnique({
       where: { shortUrl: slug },
     });
