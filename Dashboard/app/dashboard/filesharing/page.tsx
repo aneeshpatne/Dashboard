@@ -25,6 +25,7 @@ export default function FilesharingPage() {
       setLinks(res.links);
       setFilteredLinks(res.links);
     } catch (err) {
+      setLinks([]);
       console.log(err);
     } finally {
       setLoading(false);
