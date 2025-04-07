@@ -20,10 +20,6 @@ export default function Header() {
           </a>
         </p>
       </div>
-      <div className="flex gap-5 items-center">
-        <NextLogo />
-        <SupabaseLogo />
-      </div>
     </div>
   );
 }
