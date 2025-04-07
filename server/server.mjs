@@ -51,6 +51,7 @@ app.get("/", (req, res) => {
       <h1>Welcome 👋</h1>
       <p>This is Aneesh's custom URL shortener service.</p>
       <a href="https://aneeshpatne.com">Back to main site</a>
+      <p>Made with ❤️ by Aneesh Patne</p>
     </body>
     </html>
   `);
