@@ -7,7 +7,7 @@ export default function Header() {
     <div className="flex flex-col gap-16 items-center">
       <div className="flex flex-col gap-5 items-center">
         <h1 className="text-4xl font-bold text-center">Got Lost ?</h1>
-        <p className="text-sm text-muted-foreground">
+        <p className="text-sm text-muted-foreground text-center">
           To contact me or to know more about me, visit
           <a
             href="https://www.aneeshpatne.com"
