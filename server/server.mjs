@@ -97,7 +97,54 @@ app.get("/:slug", async (req, res) => {
     }
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ error: String(error)});
+    return res.status(500).send(` <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>Aneesh's URL Shortener</title>
+      <style>
+        body {
+          font-family: system-ui, sans-serif;
+          background: #f7f8fa;
+          color: #333;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          height: 100vh;
+          margin: 0;
+        }
+        h1 {
+          font-size: 2.5rem;
+          margin-bottom: 0.5rem;
+        }
+        p {
+          font-size: 1.2rem;
+          color: #666;
+          text-align: center;
+        }
+        a {
+          margin-top: 1rem;
+          padding: 0.6rem 1.2rem;
+          background: #0070f3;
+          color: white;
+          border-radius: 8px;
+          text-decoration: none;
+          font-weight: bold;
+        }
+        a:hover {
+          background: #005dc1;
+        }
+      </style>
+    </head>
+    <body>
+      <h1>Welcome 👋</h1>
+      <p>Invalid Slug</p>
+      <a href="https://aneeshpatne.com">Back to main site</a>
+      <p>Made with ❤️ by Aneesh Patne</p>
+    </body>
+    </html>`);
   }
 });
 
