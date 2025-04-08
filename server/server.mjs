@@ -72,8 +72,27 @@ app.get("/:slug", async (req, res) => {
     if (!record) {
       return res.status(404).json({ error: "Record not found" });
     }
+    const targetUrl = new URL(record.longUrl);
 
-    return res.redirect(302, record.longUrl);
+    const isSupabase = targetUrl.hostname.endsWith("supabase.com");
+    if (isSupabase) {
+      const client = targetUrl.protocol === 'https:' ? https : http;
+
+      client.get(targetUrl.href, (proxyRes) => {
+        // Forward status, headers, and stream content
+        res.statusCode = proxyRes.statusCode || 200;
+        for (const [key, value] of Object.entries(proxyRes.headers)) {
+          res.setHeader(key, value);
+        }
+        proxyRes.pipe(res);
+      }).on('error', (err) => {
+        console.error('Proxy error:', err);
+        res.status(500).json({ error: "Failed to proxy Supabase content" });
+      });
+
+    } else {
+      return res.redirect(302, record.longUrl);
+    }
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: "Internal Server Error" });
