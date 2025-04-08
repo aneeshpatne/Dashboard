@@ -6,8 +6,8 @@ import http from "http";
 const prisma = new PrismaClient();
 const app = express();
 
-app.get("/", (req, res) => {
-  res.send(`
+function renderPage(message = "Welcome 👋", subtitle = "This is Aneesh's custom URL shortener service.") {
+  return `
     <!DOCTYPE html>
     <html lang="en">
     <head>
@@ -50,14 +50,14 @@ app.get("/", (req, res) => {
       </style>
     </head>
     <body>
-      <h1>Welcome 👋</h1>
-      <p>This is Aneesh's custom URL shortener service.</p>
+      <h1>${message}</h1>
+      <p>${subtitle}</p>
       <a href="https://aneeshpatne.com">Back to main site</a>
       <p>Made with ❤️ by Aneesh Patne</p>
     </body>
     </html>
-  `);
-});
+  `;
+}
 
 app.get("/", (req, res) => {
   res.send(renderPage());
