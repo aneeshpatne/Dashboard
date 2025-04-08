@@ -2,11 +2,15 @@ import express from "express";
 import { PrismaClient } from "@prisma/client";
 import https from "https";
 import http from "http";
-
 const prisma = new PrismaClient();
 const app = express();
 
-function renderPage(message = "Welcome 👋", subtitle = "This is Aneesh's custom URL shortener service.") {
+app.use(express.static("public"));
+
+function renderPage(
+  message = "Welcome 👋",
+  subtitle = "This is Aneesh's custom URL shortener service."
+) {
   return `
     <!DOCTYPE html>
     <html lang="en">
@@ -76,36 +80,38 @@ app.get("/:slug", async (req, res) => {
     });
 
     if (!record) {
-      return res.status(404).send(renderPage("Invalid Slug", "No record found for this slug."));
+      return res
+        .status(404)
+        .send(renderPage("Invalid Slug", "No record found for this slug."));
     }
 
     const targetUrl = new URL(record.longUrl);
     const isSupabase = targetUrl.hostname.endsWith("supabase.co");
 
     if (isSupabase) {
-      const client = targetUrl.protocol === 'https:' ? https : http;
+      const client = targetUrl.protocol === "https:" ? https : http;
 
-      client.get(targetUrl.href, (proxyRes) => {
-        res.statusCode = proxyRes.statusCode || 200;
-        for (const [key, value] of Object.entries(proxyRes.headers)) {
-          res.setHeader(key, value);
-        }
-        proxyRes.pipe(res);
-      }).on('error', (err) => {
-        console.error('Proxy error:', err);
-        res.status(500).send(renderPage("Error", "Failed to proxy Supabase content."));
-      });
-
+      client
+        .get(targetUrl.href, (proxyRes) => {
+          res.statusCode = proxyRes.statusCode || 200;
+          for (const [key, value] of Object.entries(proxyRes.headers)) {
+            res.setHeader(key, value);
+          }
+          proxyRes.pipe(res);
+        })
+        .on("error", (err) => {
+          console.error("Proxy error:", err);
+          res
+            .status(500)
+            .send(renderPage("Error", "Failed to proxy Supabase content."));
+        });
     } else {
       return res.redirect(302, record.longUrl);
     }
-
   } catch (error) {
     console.error(error);
     return res.status(500).send(renderPage("Server Error", String(error)));
   }
 });
-
-
 
 export default app;
