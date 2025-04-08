@@ -74,7 +74,7 @@ app.get("/:slug", async (req, res) => {
     }
     const targetUrl = new URL(record.longUrl);
 
-    const isSupabase = targetUrl.hostname.endsWith("supabase.com");
+    const isSupabase = targetUrl.hostname.endsWith("supabase.co");
     if (isSupabase) {
       const client = targetUrl.protocol === 'https:' ? https : http;
 
