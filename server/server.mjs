@@ -72,7 +72,7 @@ app.get("/:slug", async (req, res) => {
     });
 
     if (!record) {
-      return res.status(404).json({ error: "Record not found" });
+      return res.status(404).send(`<h1> Invalid Slut </h1>`);
     }
     const targetUrl = new URL(record.longUrl);
 
