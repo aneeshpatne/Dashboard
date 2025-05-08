@@ -57,7 +57,7 @@ export default function FilesharingPage() {
     <div className="min-h-screen p-8 max-w-6xl mx-auto">
       <div className="mb-12 text-center">
         <h1 className="text-4xl font-bold text-blue-600 dark:text-blue-400 mb-4">
-          File Sharing Hub
+          Quick Share
         </h1>
         <p className="text-muted-foreground">
           Share files and manage your links easily
