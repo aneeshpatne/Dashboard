@@ -117,6 +117,8 @@ type DataBoxProps = {
 };
 function DataBox({ id, shortUrl, longUrl, createdAt }: DataBoxProps) {
   const longUrlDisp = new URL(longUrl).hostname.replace("www.", "");
+  const shortUrlRedirect = "https://go.aneeshpatne.com/" + shortUrl;
+
   return (
     <li key={id} className="border p-3 rounded-lg text-sm w-[300px]">
       <div>
@@ -126,6 +128,16 @@ function DataBox({ id, shortUrl, longUrl, createdAt }: DataBoxProps) {
         <strong>Long URL:</strong>{" "}
         <a href={longUrl} target="_blank" className="text-blue-600 underline">
           {longUrlDisp}
+        </a>
+      </div>
+
+      <div>
+        <a
+          href={shortUrlRedirect}
+          target="_blank"
+          className="text-blue-600 underline"
+        >
+          <strong>Preview URL</strong>
         </a>
       </div>
       <div className="text-xs text-muted-foreground">
