@@ -54,27 +54,6 @@ export default function RootLayout({
             <main className="flex-1">
               <div className="container py-6 md:py-10">{children}</div>
             </main>
-            <footer className="border-t border-border/40 bg-background/80 backdrop-blur-lg">
-              <div className="container flex h-14 items-center justify-between px-4 md:px-6">
-                <p className="text-sm text-muted-foreground">
-                  © {new Date().getFullYear()} Dashboard. All rights reserved.
-                </p>
-                <div className="flex items-center gap-4">
-                  <Link
-                    href="#"
-                    className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                  >
-                    Terms
-                  </Link>
-                  <Link
-                    href="#"
-                    className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                  >
-                    Privacy
-                  </Link>
-                </div>
-              </div>
-            </footer>
           </div>
         </ThemeProvider>
       </body>
