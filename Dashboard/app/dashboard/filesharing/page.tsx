@@ -303,11 +303,19 @@ function LinkBox() {
         handleDelete();
       }
     }
-    await fetch("/api/url", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ shortUrl: shortURL, longUrl: userLongURL }),
-    });
+    setLoadingSubmit(true);
+    try {
+      await fetch("/api/url", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ shortUrl: shortURL, longUrl: userLongURL }),
+      });
+      setUploadInfo("URL shortened successfully");
+    } catch (error) {
+      setUploadInfo("Error shortening URL");
+    } finally {
+      setLoadingSubmit(false);
+    }
   };
   const handleDelete = async () => {
     if (!fileURL) return;
@@ -493,10 +501,27 @@ function LinkBox() {
           <Button
             className="w-full bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white transition-colors"
             onClick={handleSubmitUrl}
+            disabled={loadingSubmit}
           >
-            Create Short URL
+            {loadingSubmit ? (
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
+                Creating Short URL
+              </div>
+            ) : (
+              "Create Short URL"
+            )}
           </Button>
         </div>
+      )}
+      {uploadInfo && (
+        <p
+          className={`text-sm text-center ${
+            uploadInfo.includes("Error") ? "text-red-500" : "text-green-500"
+          }`}
+        >
+          {uploadInfo}
+        </p>
       )}
     </div>
   );
