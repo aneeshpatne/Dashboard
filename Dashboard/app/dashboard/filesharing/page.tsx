@@ -54,27 +54,50 @@ export default function FilesharingPage() {
   }, [search]);
 
   return (
-    <div className="flex flex-col gap-4 items-center">
-      <h1 className="text-2xl font-bold">File Sharing</h1>
-      <div className="flex gap-2 items-center justify-center">
+    <div className="min-h-screen p-8 max-w-6xl mx-auto">
+      <div className="mb-12 text-center">
+        <h1 className="text-4xl font-bold text-blue-600 dark:text-blue-400 mb-4">
+          File Sharing Hub
+        </h1>
+        <p className="text-muted-foreground">
+          Share files and manage your links easily
+        </p>
+      </div>
+
+      <div className="flex gap-4 items-center justify-center mb-8">
         {links.length === 0 ? (
-          <Button onClick={handleShowAll} disabled={loading}>
-            {loading ? "Loading..." : "Show All"}
+          <Button
+            onClick={handleShowAll}
+            disabled={loading}
+            className="px-6 py-2 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white transition-colors"
+          >
+            {loading ? (
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                Loading...
+              </div>
+            ) : (
+              "Show All"
+            )}
           </Button>
         ) : (
           <Button
             type="reset"
-            className="bg-red-500 hover:bg-red-600 text-white"
+            className="px-6 py-2 bg-red-500 hover:bg-red-600 active:bg-red-700 text-white transition-colors"
             onClick={() => setLinks([])}
           >
             Reset
           </Button>
         )}
 
-        <Button onClick={() => addToggle()}>
-          {!newActive ? <p>Add New Link</p> : <p>Hide New Link</p>}
+        <Button
+          onClick={() => addToggle()}
+          className="px-6 py-2 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white transition-colors"
+        >
+          {!newActive ? "Add New Link" : "Hide New Link"}
         </Button>
       </div>
+
       <div className="flex w-full items-center justify-center space-x-2 gap-3"></div>
       {links.length > 0 && (
         <div className="mt-4 ">
@@ -120,28 +143,56 @@ function DataBox({ id, shortUrl, longUrl, createdAt }: DataBoxProps) {
   const shortUrlRedirect = "https://go.aneeshpatne.com/" + shortUrl;
 
   return (
-    <li key={id} className="border p-3 rounded-lg text-sm w-[300px]">
-      <div>
-        <strong>Short URL:</strong> {shortUrl}
-      </div>
-      <div>
-        <strong>Long URL:</strong>{" "}
-        <a href={longUrl} target="_blank" className="text-blue-600 underline">
-          {longUrlDisp}
-        </a>
-      </div>
+    <li
+      key={id}
+      className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200 w-[300px]"
+    >
+      <div className="space-y-3">
+        <div>
+          <div className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1">
+            Short URL
+          </div>
+          <div className="font-medium">{shortUrl}</div>
+        </div>
 
-      <div>
-        <a
-          href={shortUrlRedirect}
-          target="_blank"
-          className="text-blue-600 underline"
-        >
-          <strong>Preview URL</strong>
-        </a>
-      </div>
-      <div className="text-xs text-muted-foreground">
-        Created: {new Date(createdAt).toLocaleString()}
+        <div>
+          <div className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1">
+            Original URL
+          </div>
+          <a
+            href={longUrl}
+            target="_blank"
+            className="text-blue-600 dark:text-blue-400 hover:underline font-medium"
+          >
+            {longUrlDisp}
+          </a>
+        </div>
+
+        <div className="pt-2 border-t border-gray-100 dark:border-gray-700">
+          <a
+            href={shortUrlRedirect}
+            target="_blank"
+            className="inline-flex items-center text-sm text-blue-600 dark:text-blue-400 hover:underline"
+          >
+            <span className="mr-1">Preview URL</span>
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+              />
+            </svg>
+          </a>
+          <div className="text-xs text-gray-400 dark:text-gray-500 mt-2">
+            Created {new Date(createdAt).toLocaleString()}
+          </div>
+        </div>
       </div>
     </li>
   );
@@ -284,109 +335,168 @@ function LinkBox() {
   }, [info?.longUrl]);
 
   return (
-    <div className="flex flex-col gap-5 w-full items-center justify-center">
-      <div className="flex gap-2 items-center">
+    <div className="flex flex-col gap-6 w-full items-center justify-center max-w-md mx-auto bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm">
+      <div className="flex gap-2 items-center w-full justify-center">
         <Button
           variant="outline"
-          className={`${urlType === "file-share" ? "border-2 border-white" : ""}`}
+          className={`${
+            urlType === "file-share"
+              ? "border-2 border-blue-600 text-blue-600 dark:border-blue-500 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/30"
+              : "hover:border-blue-500 hover:text-blue-600 active:bg-blue-50 dark:active:bg-blue-950/30"
+          } flex-1 max-w-[150px] transition-colors`}
           onClick={() => setUrlType("file-share")}
         >
           File Share
         </Button>
         <Button
           variant="outline"
-          className={`${urlType === "url-shortener" ? "border-2 border-white" : ""}`}
+          className={`${
+            urlType === "url-shortener"
+              ? "border-2 border-blue-600 text-blue-600 dark:border-blue-500 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/30"
+              : "hover:border-blue-500  active:bg-blue-50 dark:active:bg-blue-950/30"
+          } flex-1 max-w-[150px] transition-colors`}
           onClick={() => setUrlType("url-shortener")}
         >
-          Url Shortener
+          URL Shortener
         </Button>
       </div>
-      <div className="grid w-sm items-center gap-1.5">
-        <Label htmlFor="shortURL">Short URL</Label>
-        <div className="flex items-center gap-2 w-[300px]">
-          <Input
-            type="text"
-            placeholder="Short URL"
-            id="shortURL"
-            className="text-base"
-            onChange={(e) => setShortUrl(e.target.value)}
-          />
-          <Button variant="outline" onClick={checker} disabled={loading}>
-            {loading ? "Checking..." : "Check"}
-          </Button>
-        </div>
-        <div className="flex gap-2">
+
+      <div className="grid w-full items-center gap-3">
+        <div className="space-y-2">
+          <Label htmlFor="shortURL" className="text-sm font-medium">
+            Short URL
+          </Label>
+          <div className="flex items-center gap-2">
+            <Input
+              type="text"
+              placeholder="Enter short URL"
+              id="shortURL"
+              className="text-base"
+              onChange={(e) => setShortUrl(e.target.value)}
+            />
+            <Button
+              variant="outline"
+              onClick={checker}
+              disabled={loading}
+              className="whitespace-nowrap hover:border-blue-500  active:bg-blue-50 dark:active:bg-blue-950/30"
+            >
+              {loading ? (
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
+                  Checking
+                </div>
+              ) : (
+                "Check"
+              )}
+            </Button>
+          </div>
           {info && (
-            <p className="text-sm text-muted-foreground">{info.status}</p>
-          )}
-          {info.longUrl && (
-            <a
-              href={info.longUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-600 underline text-sm"
-            >
-              Preview
-            </a>
-          )}
-          {fileURL && (
-            <button
-              className="text-red-600 underline text-sm"
-              onClick={handleDelete}
-            >
-              Delete File
-            </button>
+            <div className="flex gap-2 items-center text-sm">
+              <span
+                className={`${
+                  info.status.includes("Exists")
+                    ? "text-yellow-600"
+                    : "text-green-600"
+                }`}
+              >
+                {info.status}
+              </span>
+              {info.longUrl && (
+                <a
+                  href={info.longUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 hover:underline"
+                >
+                  Preview
+                </a>
+              )}
+              {fileURL && (
+                <button
+                  className="text-red-600 hover:underline"
+                  onClick={handleDelete}
+                >
+                  Delete File
+                </button>
+              )}
+            </div>
           )}
         </div>
       </div>
 
       {urlType === "file-share" ? (
-        <>
-          <Input
-            type="file"
-            ref={fileInputRef}
-            className="w-[300px]"
-            onChange={handleFileChange}
-          />
+        <div className="space-y-4 w-full">
+          <div className="space-y-2">
+            <Label htmlFor="file" className="text-sm font-medium">
+              Upload File
+            </Label>
+            <Input
+              type="file"
+              id="file"
+              ref={fileInputRef}
+              className="w-full"
+              onChange={handleFileChange}
+            />
+          </div>
+
           {selectedFile && (
-            <div className="flex flex-col items-center gap-2">
+            <div className="flex justify-center">
               <Button
                 variant="outline"
                 onClick={handleClear}
-                className="text-red-500 border-red-500 hover:bg-red-500 hover:text-white"
+                className="text-red-500 border-red-500 hover:bg-red-50 hover:text-red-600 active:bg-red-100 dark:hover:bg-red-950/30 dark:active:bg-red-950/50 transition-colors"
               >
                 Remove File
               </Button>
             </div>
           )}
+
           <Button
             type="submit"
-            className="w-auto"
-            variant="default"
+            className="w-full bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white transition-colors"
             onClick={handleSubmit}
             disabled={loadingSubmit || !selectedFile || !shortURL}
           >
-            {loadingSubmit ? "Uploading..." : "Upload File"}
+            {loadingSubmit ? (
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                Uploading...
+              </div>
+            ) : (
+              "Upload File"
+            )}
           </Button>
+
           {uploadInfo && (
-            <p className="text-sm text-muted-foreground">{uploadInfo}</p>
+            <p
+              className={`text-sm text-center ${
+                uploadInfo.includes("Error") ? "text-red-500" : "text-green-500"
+              }`}
+            >
+              {uploadInfo}
+            </p>
           )}
-        </>
+        </div>
       ) : (
-        <>
-          <div className="grid w-[300px] items-center gap-1.5">
-            <Label htmlFor="longURL">Long URL</Label>
+        <div className="space-y-4 w-full">
+          <div className="space-y-2">
+            <Label htmlFor="longURL" className="text-sm font-medium">
+              Long URL
+            </Label>
             <Input
-              placeholder="Long URL"
+              placeholder="Enter the URL to shorten"
               id="longURL"
               className="text-base"
               onChange={(e) => setUserLongURL(e.target.value)}
-            ></Input>
+            />
           </div>
-          <Button className="w-[80px]" onClick={handleSubmitUrl}>
-            Submit
+          <Button
+            className="w-full bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white transition-colors"
+            onClick={handleSubmitUrl}
+          >
+            Create Short URL
           </Button>
-        </>
+        </div>
       )}
     </div>
   );

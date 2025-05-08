@@ -4,58 +4,48 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 240 10% 3.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
-    --primary: 221.2 83.2% 53.3%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 262.1 83.3% 57.8%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 221.2 83.2% 53.3%;
-    --radius: 0.75rem;
-    --chart-1: 221.2 83.2% 53.3%;
-    --chart-2: 173 58% 45%;
-    --chart-3: 43 96% 56%;
-    --chart-4: 262.1 83.3% 57.8%;
-    --chart-5: 340 82% 55%;
+    --background: 220 20% 98%;
+    --foreground: 220 15% 25%;
+    --card: 220 20% 100%;
+    --card-foreground: 220 15% 25%;
+    --popover: 220 20% 100%;
+    --popover-foreground: 220 15% 25%;
+    --primary: 215 85% 45%; /* Darker and more saturated blue */
+    --primary-foreground: 0 0% 100%; /* Pure white for best contrast */
+    --secondary: 210 30% 90%;
+    --secondary-foreground: 210 20% 25%; /* Darker for better contrast */
+    --muted: 210 30% 95%;
+    --muted-foreground: 210 15% 45%; /* Darker for better contrast */
+    --accent: 215 85% 45%; /* Matching primary for consistency */
+    --accent-foreground: 0 0% 100%; /* Pure white for best contrast */
+    --destructive: 0 85% 45%; /* Darker and more saturated red */
+    --destructive-foreground: 0 0% 100%;
+    --border: 210 20% 85%;
+    --input: 210 20% 92%;
+    --ring: 215 85% 45%;
+    --radius: 0.5rem;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 6.5%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 262.1 83.3% 57.8%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 50.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 224.3 76.5% 48%;
-    --chart-1: 217.2 91.2% 59.8%;
-    --chart-2: 173 58% 65%;
-    --chart-3: 43 96% 56%;
-    --chart-4: 262.1 83.3% 67.8%;
-    --chart-5: 340 82% 65%;
+    --background: 220 30% 12%;
+    --foreground: 210 30% 98%; /* Lighter for better contrast */
+    --card: 220 25% 18%;
+    --card-foreground: 210 30% 98%;
+    --popover: 220 30% 15%;
+    --popover-foreground: 210 30% 98%;
+    --primary: 215 85% 55%; /* Brighter in dark mode */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 220 20% 25%;
+    --secondary-foreground: 210 30% 98%;
+    --muted: 220 15% 22%;
+    --muted-foreground: 210 20% 70%; /* Lighter for better contrast */
+    --accent: 215 85% 55%; /* Matching primary */
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 85% 55%; /* Brighter red in dark mode */
+    --destructive-foreground: 0 0% 100%;
+    --border: 220 15% 30%;
+    --input: 220 15% 28%;
+    --ring: 215 85% 55%;
   }
 }
 
@@ -65,22 +55,28 @@
   }
   body {
     @apply bg-background text-foreground;
-    background-image: radial-gradient(
-      at 100% 0%,
-      hsl(var(--accent) / 0.1) 0px,
-      transparent 60%
-    );
     background-attachment: fixed;
   }
 
   .card,
   .dropdown-menu {
-    @apply backdrop-blur-[2px] bg-opacity-90 shadow-lg border border-border/50;
+    @apply backdrop-blur-sm bg-card/95 shadow-md border border-border/60;
   }
 
-  .btn-glow:hover {
-    box-shadow: 0 0 15px 2px hsl(var(--primary) / 0.5);
-    transition: all 0.3s ease;
+  /* Enhanced button styles for better contrast */
+  button:not([disabled]),
+  [role="button"]:not([disabled]) {
+    @apply transition-all duration-200;
+  }
+
+  button:active:not([disabled]),
+  [role="button"]:active:not([disabled]) {
+    @apply transform scale-[0.98] transition-transform duration-75;
+  }
+
+  button[disabled],
+  [role="button"][disabled] {
+    @apply opacity-50 cursor-not-allowed;
   }
 }
 
@@ -90,10 +86,10 @@
   }
 
   .glassmorphism {
-    @apply bg-white/10 backdrop-blur-md border border-white/20;
+    @apply bg-card/70 backdrop-blur-lg border border-border/30 shadow-lg;
   }
 
   .dark .glassmorphism {
-    @apply bg-black/30 border-white/10;
+    @apply bg-card/60 border-border/20;
   }
 }
