@@ -2,7 +2,7 @@ import HeaderAuth from "@/components/header-auth";
 import { ThemeSwitcher } from "@/components/theme-switcher";
 import { Geist } from "next/font/google";
 import { ThemeProvider } from "next-themes";
-import { House } from "lucide-react";
+import { Home } from "lucide-react";
 import Link from "next/link";
 import "./globals.css";
 
@@ -35,23 +35,47 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <main className="min-h-screen flex flex-col items-center">
-            <div className="flex-1 w-full flex flex-col gap-20 items-center">
-              <nav className="w-full flex justify-center border-b border-b-foreground/10 h-16">
-                <div className="w-full flex justify-between items-center p-3 px-5 text-sm">
-                  <Link
-                    href="/"
-                    className="font-semibold flex items-center gap-2"
-                  >
-                    <House className="h-4 w-4" />
-                  </Link>
+          <div className="min-h-screen flex flex-col">
+            <header className="sticky top-0 z-40 w-full border-b border-border/40 backdrop-blur-lg bg-background/80">
+              <div className="container flex h-16 items-center justify-between px-4 md:px-6">
+                <Link
+                  href="/"
+                  className="flex items-center gap-2 text-lg font-semibold transition-colors hover:text-primary"
+                >
+                  <Home className="h-5 w-5" />
+                  <span>Dashboard</span>
+                </Link>
+                <div className="flex items-center gap-4">
                   <HeaderAuth />
                   <ThemeSwitcher />
                 </div>
-              </nav>
-              <div className="">{children}</div>
-            </div>
-          </main>
+              </div>
+            </header>
+            <main className="flex-1">
+              <div className="container py-6 md:py-10">{children}</div>
+            </main>
+            <footer className="border-t border-border/40 bg-background/80 backdrop-blur-lg">
+              <div className="container flex h-14 items-center justify-between px-4 md:px-6">
+                <p className="text-sm text-muted-foreground">
+                  © {new Date().getFullYear()} Dashboard. All rights reserved.
+                </p>
+                <div className="flex items-center gap-4">
+                  <Link
+                    href="#"
+                    className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    Terms
+                  </Link>
+                  <Link
+                    href="#"
+                    className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    Privacy
+                  </Link>
+                </div>
+              </div>
+            </footer>
+          </div>
         </ThemeProvider>
       </body>
     </html>

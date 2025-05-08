@@ -22,53 +22,46 @@ const ThemeSwitcher = () => {
   }, []);
 
   if (!mounted) {
-    return (
-      <div className="w-[30px] h-[30px] animate-pulse rounded-md bg-muted" />
-    );
+    return <div className="w-9 h-9 rounded-md animate-pulse bg-muted" />;
   }
-
-  const ICON_SIZE = 16;
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size={"sm"}>
-          {theme === "light" ? (
-            <Sun
-              key="light"
-              size={ICON_SIZE}
-              className={"text-muted-foreground"}
-            />
-          ) : theme === "dark" ? (
-            <Moon
-              key="dark"
-              size={ICON_SIZE}
-              className={"text-muted-foreground"}
-            />
-          ) : (
-            <Laptop
-              key="system"
-              size={ICON_SIZE}
-              className={"text-muted-foreground"}
-            />
-          )}
+        <Button
+          variant="outline"
+          size="icon"
+          className="rounded-full w-9 h-9 transition-all hover:bg-primary/20 hover:text-primary"
+        >
+          <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+          <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+          <span className="sr-only">Toggle theme</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-content" align="start">
+      <DropdownMenuContent className="w-40 backdrop-blur-md bg-background/90">
         <DropdownMenuRadioGroup
           value={theme}
-          onValueChange={(e) => setTheme(e)}
+          onValueChange={(value) => setTheme(value)}
         >
-          <DropdownMenuRadioItem className="flex gap-2" value="light">
-            <Sun size={ICON_SIZE} className="text-muted-foreground" />{" "}
+          <DropdownMenuRadioItem
+            value="light"
+            className="flex items-center gap-2 cursor-pointer"
+          >
+            <Sun className="h-4 w-4 text-amber-500" />
             <span>Light</span>
           </DropdownMenuRadioItem>
-          <DropdownMenuRadioItem className="flex gap-2" value="dark">
-            <Moon size={ICON_SIZE} className="text-muted-foreground" />{" "}
+          <DropdownMenuRadioItem
+            value="dark"
+            className="flex items-center gap-2 cursor-pointer"
+          >
+            <Moon className="h-4 w-4 text-blue-400" />
             <span>Dark</span>
           </DropdownMenuRadioItem>
-          <DropdownMenuRadioItem className="flex gap-2" value="system">
-            <Laptop size={ICON_SIZE} className="text-muted-foreground" />{" "}
+          <DropdownMenuRadioItem
+            value="system"
+            className="flex items-center gap-2 cursor-pointer"
+          >
+            <Laptop className="h-4 w-4 text-green-500" />
             <span>System</span>
           </DropdownMenuRadioItem>
         </DropdownMenuRadioGroup>
