@@ -1,181 +1,183 @@
-# Dashboard - Full-Stack Web Application
+# Quick Share
 
-A modern, full-featured dashboard application built with Next.js, featuring user authentication, URL shortening, file sharing capabilities, and a clean, responsive UI.
+A full-stack web application for URL shortening and file sharing, featuring a modern Next.js dashboard and Express.js redirection service.
 
-## 🚀 Features
+## Overview
 
-- **Authentication System**: Complete user authentication with Supabase Auth
-  - Sign up / Sign in
-  - Password reset functionality
-  - Protected routes and middleware
-- **URL Shortener**: Create and manage shortened URLs
-  - Custom short URL creation
-  - URL management dashboard
-  - Real-time search and filtering
-- **File Sharing**: Secure file sharing capabilities
-  - Upload and share files
-  - Real-time collaboration features
-- **Modern UI/UX**: Beautiful, responsive design
-  - Dark/Light theme support
-  - Tailwind CSS styling
-  - Radix UI components
-  - Lucide React icons
+Quick Share is a self-hosted platform that combines URL shortening with file sharing capabilities. The application consists of two main components:
 
-## 🛠️ Tech Stack
+- **Dashboard**: A Next.js web application for managing shortened URLs and sharing files
+- **Server**: An Express.js service that handles URL redirects and serves files
 
-### Frontend
+## Features
 
-- **Next.js 15** - React framework with App Router
-- **React 19** - UI library
-- **TypeScript** - Type safety
-- **Tailwind CSS** - Utility-first CSS framework
-- **Radix UI** - Accessible component primitives
-- **Lucide React** - Icon library
-- **next-themes** - Theme switching
+- URL shortening with custom slugs
+- File sharing with direct links
+- User authentication and authorization
+- Modern, responsive UI with dark mode support
+- Real-time URL management dashboard
+- Supabase integration for file storage
+- PostgreSQL database with Prisma ORM
 
-### Backend
+## Tech Stack
 
-- **Supabase** - Authentication and real-time database
-- **Prisma** - Database ORM
-- **PostgreSQL** - Database
-- **Express.js** - Server framework (separate server)
+### Dashboard (Frontend)
+- Next.js 14+ (App Router)
+- React 19
+- TypeScript
+- Tailwind CSS
+- Radix UI Components
+- Supabase (Authentication & Storage)
+- Prisma Client
+- next-themes (Dark mode)
 
-### Development Tools
+### Server (Backend)
+- Express.js 5
+- Prisma ORM
+- PostgreSQL
+- CORS enabled
 
-- **Prettier** - Code formatting
-- **ESLint** - Code linting
-- **PostCSS** - CSS processing
-
-## 📁 Project Structure
+## Project Structure
 
 ```
-Dashboard/
-├── app/                    # Next.js App Router
-│   ├── (auth-pages)/      # Authentication pages
-│   ├── api/               # API routes
-│   ├── auth/              # Auth callbacks
-│   ├── dashboard/         # Protected dashboard pages
-│   └── globals.css        # Global styles
-├── components/            # Reusable components
-│   ├── ui/               # UI primitives
-│   └── tutorial/         # Tutorial components
-├── lib/                  # Utility libraries
-├── prisma/               # Database schema and migrations
-├── public/               # Static assets
-└── utils/                # Utility functions
-server/                   # Express.js backend server
+.
+├── dashboard/          # Next.js frontend application
+│   ├── app/           # Next.js app directory
+│   ├── components/    # React components
+│   ├── lib/           # Utility libraries
+│   ├── prisma/        # Database schema
+│   └── utils/         # Helper functions
+├── server/            # Express.js backend service
+│   ├── public/        # Static files
+│   ├── prisma/        # Database schema
+│   └── server.mjs     # Main server file
+└── Files/             # File storage directory
 ```
 
-## 🚦 Getting Started
+## Prerequisites
 
-### Prerequisites
-
-- Node.js 18+
-- npm or yarn
+- Node.js 18+ and npm
 - PostgreSQL database
-- Supabase account
+- Supabase account (for authentication and storage)
 
-### Installation
+## Installation
 
-1. **Clone the repository**
+### 1. Clone the Repository
 
-   ```bash
-   git clone <repository-url>
-   cd Dashboard
-   ```
+```bash
+git clone <repository-url>
+cd Dashboard
+```
 
-2. **Install dependencies**
+### 2. Database Setup
 
-   ```bash
-   # Frontend
-   cd Dashboard
-   npm install
+Create a PostgreSQL database for your application. You'll need the connection string in the format:
 
-   # Backend server
-   cd ../server
-   npm install
-   ```
+```
+postgresql://USER:PASSWORD@HOST:PORT/DATABASE
+```
 
-3. **Environment Setup**
-   Create a `.env.local` file in the `Dashboard` directory:
+### 3. Dashboard Setup
 
-   ```env
-   NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
-   NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-   DATABASE_URL=your_postgresql_connection_string
-   ```
+Navigate to the dashboard directory and install dependencies:
 
-4. **Database Setup**
+```bash
+cd dashboard
+npm install
+```
 
-   ```bash
-   # Run Prisma migrations
-   cd Dashboard
-   npx prisma migrate dev
-   npx prisma generate
-   ```
+Create a `.env.local` file with the following variables:
 
-5. **Start the development servers**
+```bash
+# Supabase Configuration
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 
-   ```bash
-   # Frontend (Next.js)
-   cd Dashboard
-   npm run dev
+# Database
+DATABASE_URL=postgresql://USER:PASSWORD@HOST:PORT/DATABASE
+```
 
-   # Backend server (in another terminal)
-   cd server
-   npm start
-   ```
+Generate Prisma client and run migrations:
 
-The application will be available at `http://localhost:3000`
+```bash
+npx prisma generate
+npx prisma db push
+```
 
-## 📖 Usage
+### 4. Server Setup
 
-### Authentication
+Navigate to the server directory and install dependencies:
 
-1. Navigate to `/sign-up` to create a new account
-2. Use `/sign-in` to log into existing accounts
-3. Access `/forgot-password` to reset passwords
+```bash
+cd ../server
+npm install
+```
 
-### Dashboard Features
+Create a `.env` file with your database connection:
 
-1. **Main Dashboard**: Overview of available features
-2. **URL Shortener**: Create and manage shortened URLs
-3. **File Sharing**: Upload and share files securely
-4. **Account Management**: Update passwords and profile settings
+```bash
+DATABASE_URL=postgresql://USER:PASSWORD@HOST:PORT/DATABASE
+```
 
-## 🔧 API Endpoints
+Generate Prisma client:
 
-### URL Management
+```bash
+npx prisma generate
+```
 
-- `GET /api/url` - Retrieve all user URLs
-- `POST /api/url` - Create/update short URLs
-- `GET /api/url/[slug]` - Redirect to original URL
+## Running the Application
 
-### Authentication
+### Development Mode
 
-- `POST /auth/callback` - Supabase auth callback
+**Dashboard:**
+```bash
+cd dashboard
+npm run dev
+```
+The dashboard will be available at `http://localhost:3000`
 
-## 🎨 UI Components
+**Server:**
+```bash
+cd server
+node server.mjs
+```
+The server will run on its configured port (default: 3001 or as specified)
 
-The application uses a modern component library built with:
+### Production Build
 
-- **Radix UI** for accessible primitives
-- **Tailwind CSS** for styling
-- **CVA (Class Variance Authority)** for component variants
-- **Lucide React** for icons
+**Dashboard:**
+```bash
+cd dashboard
+npm run build
+npm start
+```
 
-Key components include:
+**Server:**
+```bash
+cd server
+node server.mjs
+```
 
-- Buttons with multiple variants
-- Form inputs and labels
-- Dropdown menus
-- Checkboxes
-- Badge components
-- Theme switcher
+## Environment Variables
 
-## 🗄️ Database Schema
+### Dashboard (.env.local)
 
-The application uses Prisma with PostgreSQL:
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `NEXT_PUBLIC_SUPABASE_URL` | Your Supabase project URL | Yes |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Your Supabase anonymous key | Yes |
+| `DATABASE_URL` | PostgreSQL connection string | Yes |
+
+### Server (.env)
+
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `DATABASE_URL` | PostgreSQL connection string | Yes |
+| `PORT` | Server port (optional) | No |
+
+## Database Schema
+
+The application uses a shared PostgreSQL database with the following schema:
 
 ```prisma
 model shortUrl {
@@ -186,19 +188,107 @@ model shortUrl {
 }
 ```
 
-## 🚀 Deployment
+## Features Guide
 
-### Frontend (Vercel)
+### URL Shortening
 
-1. Connect your repository to Vercel
-2. Add environment variables
-3. Deploy automatically on push
+1. Log in to the dashboard
+2. Navigate to the URL management page
+3. Enter your long URL and optional custom slug
+4. Copy the generated short URL
+5. The server will redirect visitors from the short URL to the long URL
 
-### Backend
+### File Sharing
 
-The Express.js server can be deployed to any Node.js hosting platform:
+1. Log in to the dashboard
+2. Navigate to the file sharing section
+3. Upload your file to Supabase storage
+4. Share the generated link with others
 
-- Railway
-- Render
-- DigitalOcean App Platform
-- AWS/Google Cloud
+## Deployment
+
+### Dashboard (Vercel)
+
+The dashboard is configured for Vercel deployment:
+
+1. Push your code to GitHub
+2. Import the project in Vercel
+3. Set the root directory to `dashboard`
+4. Add environment variables in Vercel dashboard
+5. Deploy
+
+### Server (Vercel)
+
+The server is configured for Vercel deployment with a `vercel.json` configuration:
+
+1. Push your code to GitHub
+2. Import the project in Vercel (separate project)
+3. Set the root directory to `server`
+4. Add environment variables in Vercel dashboard
+5. Deploy
+
+Alternatively, deploy to any Node.js hosting provider (Railway, Render, DigitalOcean, etc.)
+
+## API Endpoints
+
+### Server Endpoints
+
+- `GET /` - Landing page
+- `GET /:slug` - Redirect to long URL or proxy Supabase content
+
+## Development
+
+### Available Scripts (Dashboard)
+
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm start` - Start production server
+
+### Available Scripts (Server)
+
+- `node server.mjs` - Start server
+- `npm run postinstall` - Generate Prisma client
+
+## Security Considerations
+
+- Keep your `.env` and `.env.local` files secure and never commit them
+- Rotate Supabase keys regularly
+- Use strong database passwords
+- Enable Row Level Security (RLS) in Supabase
+- Consider implementing rate limiting for production
+- Use HTTPS in production
+
+## Troubleshooting
+
+### Common Issues
+
+**Prisma Client not generated:**
+```bash
+npx prisma generate
+```
+
+**Database connection errors:**
+- Verify your DATABASE_URL is correct
+- Ensure PostgreSQL is running
+- Check firewall settings
+
+**Supabase errors:**
+- Verify your Supabase credentials
+- Check project status in Supabase dashboard
+- Ensure storage buckets are created and public
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## License
+
+This project is licensed under the MIT License.
+
+## Support
+
+For issues, questions, or contributions, please open an issue on GitHub.
